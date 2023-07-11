@@ -56,15 +56,12 @@
         <router-view></router-view>
       </v-fade-transition>
     </v-container>
-    <inicio></inicio>
   </v-main>  
   </v-card>    
 </v-app>
 </template>
 <script>
-import Inicio from './components/Inicio.vue';
 export default {
-  components: { Inicio },
 name: 'App',
 data: () => ({    
 drawer: false,

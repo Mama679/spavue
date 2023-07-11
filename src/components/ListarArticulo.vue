@@ -31,8 +31,8 @@
                         <tbody>
                             <tr v-for="articulo in articulos" :key="articulo.id">
                                 <td>{{articulo.id}}</td>
-                                <td>{{articulo.descripcion}}</td>
-                                <td>{{articulo.precio}}</td>
+                                <td>{{articulo.title}}</td>
+                                <td>{{articulo.price}}</td>
                                 <td>{{articulo.stock}}</td>
                                 <td>
                                     <v-btn :to="{name:'editarArticulo', params:{id:articulo.id}}" fab small color="primary"><v-icon>mdi-pencil</v-icon></v-btn>
@@ -65,7 +65,46 @@
 </template>
 
 <script>
+import axios from 'axios';
+
 export default {
-    name:'listarArticulo'
+    name:'listarArticulo',
+    mounted(){
+        this.obtenerArticulo()
+    },
+    data(){
+        return{
+            dialog:false,
+            articulos:null,
+            id:null,
+            snackbar:false,
+            textsnack:'Registro Eliminado.'
+        }
+    },
+    methods:{
+       async obtenerArticulo(){
+            await axios.get('https://dummyjson.com/products')
+                .then(res => {
+                    //console.log(res.data);
+                    this.articulos = res.data.products;
+                })
+                .catch(function(error){
+                    console.log(error);
+                });
+        },
+        async confirmarBorrado(id){
+         await   axios.delete('https://dummyjson.com/products/'+id)
+            .then((res) => {
+                    console.log(res.data);
+                    this.obtenerArticulo();
+                    this.dialog = false;
+                    this.snackbar = true;
+                })
+                .catch(function(error){
+                    console.log(error);
+                });
+            
+        }
+    }
 }
 </script>

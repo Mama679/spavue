@@ -9,13 +9,13 @@
         <v-col>         
             <form v-on:submit.prevent="guardarArticulo()">
             <v-text-field
-                v-model="articulo.descripcion"        
+                v-model="articulo.title"        
                 label="Descripción"        
                 outlined
                 required       
             ></v-text-field>
             <v-text-field
-                v-model="articulo.precio"        
+                v-model="articulo.price"        
                 label="Precio"
                 type="number"                
                 prefix="$"
@@ -39,7 +39,49 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
-    name:'editarArticulo'
+    name:'editarArticulo',
+    mounted(){
+      this.id = this.$route.params.id;
+      axios.get('https://dummyjson.com/products/'+this.id)
+            .then((res) => {
+                    console.log(res.data);
+                    this.articulo = res.data;
+                })
+                .catch(function(error){
+                    console.log(error);
+                });
+            
+    },
+    data(){
+      return{
+        id:null,
+        articulo:{
+          title:'',
+          price:'',
+          stock:''
+        }
+      }
+    },
+    methods:{
+      async guardarArticulo(){
+        let router = this.$router;
+        const formData = new FormData();
+        formData.append('title',this.articulo.title);
+        formData.append('price',this.articulo.price);
+        formData.append('stock',this.articulo.stock);
+        await axios.put('https://dummyjson.com/products/'+this.id,formData)
+        .then((res) => {
+              console.log(res.data);
+              router.push('/articulos');
+                  
+        })
+                .catch(function(error){
+                    console.log(error);
+        });
+      }
+    }
+
 }
 </script>

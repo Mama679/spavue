@@ -8,14 +8,14 @@
         <v-row>
             <v-col>
                 <form v-on:submit.prevent="guardarArticulo()">
-                    <v-text-field v-model="articulo.descripcion"
+                    <v-text-field v-model="articulo.title"
                             label="Descripción"
                             outlined
                             required   
                     >
                     </v-text-field>
                     <v-text-field
-                        v-model="articulo.precio"        
+                        v-model="articulo.price"        
                         label="Precio"
                         type="number"                
                         prefix="$"
@@ -41,7 +41,34 @@
 </template>
 
 <script>
+import axios from 'axios';
 export default {
-    name:'crearArticulo'
+    name:'crearArticulo',
+    data(){
+        return{
+            articulo:{
+                title:'',
+                price:'',
+                stock:''
+            }
+        };
+    },
+    methods:{
+       async guardarArticulo(){
+            var router = this.$router;
+           const formData = new FormData();
+           formData.append('title',this.articulo.title);
+           formData.append('price',this.articulo.price);
+           formData.append('stock',this.articulo.stock);
+          await axios.post('https://dummyjson.com/products/add',formData)
+           .then((res)=>{
+               console.log(res.data);
+               router.push('/articulos');
+           })
+           .catch(function(error){
+        console.log(error);
+            });
+        }
+    }
 }
 </script>
